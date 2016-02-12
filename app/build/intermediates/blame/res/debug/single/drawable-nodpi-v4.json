@@ -1,42 +1,22 @@
 [
     {
-        "merged": "D:\\OGU\\AndroidProjects\\BrickBomb\\BrickBomb_android\\trunk\\app\\build\\intermediates\\res\\merged\\debug\\drawable-nodpi-v4\\exit.png",
-        "source": "D:\\OGU\\AndroidProjects\\BrickBomb\\BrickBomb_android\\trunk\\app\\src\\main\\res\\drawable-nodpi\\exit.png"
+        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/rate.png",
+        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/rate.png"
     },
     {
-        "merged": "D:\\OGU\\AndroidProjects\\BrickBomb\\app\\build\\intermediates\\res\\merged\\debug\\drawable-nodpi-v4\\howtoplay.png",
-        "source": "D:\\OGU\\AndroidProjects\\BrickBomb\\app\\src\\main\\res\\drawable-nodpi\\howtoplay.png"
+        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/start.png",
+        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/start.png"
     },
     {
-        "merged": "D:\\OGU\\AndroidProjects\\BrickBomb\\app\\build\\intermediates\\res\\merged\\debug\\drawable-nodpi-v4\\rate.png",
-        "source": "D:\\OGU\\AndroidProjects\\BrickBomb\\app\\src\\main\\res\\drawable-nodpi\\rate.png"
+        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/howtoplay.png",
+        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/howtoplay.png"
     },
     {
-        "merged": "D:\\OGU\\AndroidProjects\\BrickBomb\\BrickBomb_android\\trunk\\app\\build\\intermediates\\res\\merged\\debug\\drawable-nodpi-v4\\howtoplay.png",
-        "source": "D:\\OGU\\AndroidProjects\\BrickBomb\\BrickBomb_android\\trunk\\app\\src\\main\\res\\drawable-nodpi\\howtoplay.png"
+        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/highscore.png",
+        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/highscore.png"
     },
     {
-        "merged": "D:\\OGU\\AndroidProjects\\BrickBomb\\app\\build\\intermediates\\res\\merged\\debug\\drawable-nodpi-v4\\exit.png",
-        "source": "D:\\OGU\\AndroidProjects\\BrickBomb\\app\\src\\main\\res\\drawable-nodpi\\exit.png"
-    },
-    {
-        "merged": "D:\\OGU\\AndroidProjects\\BrickBomb\\app\\build\\intermediates\\res\\merged\\debug\\drawable-nodpi-v4\\highscore.png",
-        "source": "D:\\OGU\\AndroidProjects\\BrickBomb\\app\\src\\main\\res\\drawable-nodpi\\highscore.png"
-    },
-    {
-        "merged": "D:\\OGU\\AndroidProjects\\BrickBomb\\BrickBomb_android\\trunk\\app\\build\\intermediates\\res\\merged\\debug\\drawable-nodpi-v4\\start.png",
-        "source": "D:\\OGU\\AndroidProjects\\BrickBomb\\BrickBomb_android\\trunk\\app\\src\\main\\res\\drawable-nodpi\\start.png"
-    },
-    {
-        "merged": "D:\\OGU\\AndroidProjects\\BrickBomb\\app\\build\\intermediates\\res\\merged\\debug\\drawable-nodpi-v4\\start.png",
-        "source": "D:\\OGU\\AndroidProjects\\BrickBomb\\app\\src\\main\\res\\drawable-nodpi\\start.png"
-    },
-    {
-        "merged": "D:\\OGU\\AndroidProjects\\BrickBomb\\BrickBomb_android\\trunk\\app\\build\\intermediates\\res\\merged\\debug\\drawable-nodpi-v4\\rate.png",
-        "source": "D:\\OGU\\AndroidProjects\\BrickBomb\\BrickBomb_android\\trunk\\app\\src\\main\\res\\drawable-nodpi\\rate.png"
-    },
-    {
-        "merged": "D:\\OGU\\AndroidProjects\\BrickBomb\\BrickBomb_android\\trunk\\app\\build\\intermediates\\res\\merged\\debug\\drawable-nodpi-v4\\highscore.png",
-        "source": "D:\\OGU\\AndroidProjects\\BrickBomb\\BrickBomb_android\\trunk\\app\\src\\main\\res\\drawable-nodpi\\highscore.png"
+        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/exit.png",
+        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/exit.png"
     }
 ]
