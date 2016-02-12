@@ -3,23 +3,14 @@ package oogames.com.brickbomb;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.widget.ImageButton;
 
 /**
  * Created by ADMIN on 11.02.2016.
  */
-public class MenuButton {
-    public Bitmap image;
-    public int X, Y;
-    public int Width;
-    public int Height;
-    public ImageButton Button;
+public class MenuButton extends SpriteNode {
 
     public MenuButton(Bitmap res, int w, int h) {
-        Width = w;
-        Height = h;
-        image = Bitmap.createScaledBitmap(res, w, h, false);
+        super(res, w, h);
     }
 
     private static double buttonScaleRatio() {
@@ -55,7 +46,7 @@ public class MenuButton {
         opt.inMutable = true;
         MenuButton mb = new MenuButton(BitmapFactory.decodeResource(resources, R.drawable.highscore, opt), w, h);
         mb.X = screenW / 2 - w / 2;
-        mb.Y = (int) (screenH / 2 - h * 0);
+        mb.Y = (screenH / 2);
         return mb;
     }
 
@@ -81,17 +72,4 @@ public class MenuButton {
         mb.Y = (int) (screenH / 2 - h * -1.1 * 2);
         return mb;
     }
-
-    public boolean ContainsCGPosition(float x, float y) {
-        return X < x && X + Width > x && Y + Width > y && Y < y;
-    }
-
-    public void update() {
-
-    }
-
-    public void draw(Canvas canvas) {
-        canvas.drawBitmap(image, X, Y, null);
-    }
-
 }
