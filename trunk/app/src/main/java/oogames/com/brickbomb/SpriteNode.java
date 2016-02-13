@@ -18,6 +18,12 @@ public class SpriteNode {
         image = Bitmap.createScaledBitmap(res, w, h, false);
     }
 
+    public void setSize(int w, int h) {
+        Width = w;
+        Height = h;
+        image = Bitmap.createScaledBitmap(image, w, h, false);
+    }
+
     public boolean ContainsCGPosition(float x, float y) {
         return x > X && x < X + Width && y > Y && y < Y + Height;
     }

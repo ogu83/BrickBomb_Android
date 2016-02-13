@@ -3,12 +3,15 @@ package oogames.com.brickbomb;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
+import java.util.Random;
+
 /**
  * Created by ADMIN on 11.02.2016.
  */
 public class MainThread extends Thread {
     public static Canvas canvas;
-    private int FPS = 30;
+    public static Random RND = new Random();
+    private int FPS = 15;
     private double averageFPS;
     private SurfaceHolder surfaceHolder;
     private GamePanel gamePanel;
@@ -30,12 +33,13 @@ public class MainThread extends Thread {
         long targetTime = 1000 / FPS;
 
         while (running) {
-            startTime = System.nanoTime();
+            startTime = System.currentTimeMillis();
             canvas = null;
 
             try {
                 canvas = this.surfaceHolder.lockCanvas();
                 synchronized (surfaceHolder) {
+                    this.gamePanel.postInvalidate();
                     this.gamePanel.update();
                     this.gamePanel.draw(canvas);
                 }
@@ -50,7 +54,7 @@ public class MainThread extends Thread {
                 }
             }
 
-            timeMillis = (System.nanoTime() - startTime) / 1000000;
+            timeMillis = (System.currentTimeMillis() - startTime) / 1;
             waitTime = targetTime - timeMillis;
 
             try {
@@ -58,10 +62,10 @@ public class MainThread extends Thread {
             } catch (Exception ex) {
             }
 
-            totalTime += System.nanoTime() - startTime;
+            totalTime += System.currentTimeMillis() - startTime;
             frameCount++;
             if (frameCount == FPS) {
-                averageFPS = 1000 / ((totalTime / frameCount) / 1000000);
+                averageFPS = 1000 / ((totalTime / frameCount) / 1);
                 frameCount = 0;
                 totalTime = 0;
                 System.out.printf("AverageFPS : %s%n", averageFPS);
