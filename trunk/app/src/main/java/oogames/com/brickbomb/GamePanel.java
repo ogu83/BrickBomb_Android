@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.net.Uri;
@@ -57,9 +58,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private Brick selectedBrick;
     private int firstTouchX;
     private boolean brickMoved;
+
     private SpriteNode _soundButton;
     private SpriteNode _playPauseButton;
     private SpriteNode _gotoMenuButton;
+    private SpriteNode levelUpSign;
 
     private MenuButton btnStart;
     private MenuButton btnHowToPlay;
@@ -322,7 +325,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
         createBackgroundMusic1();
         gridLinesOn = true;
-        //[self drawScore];
+        drawScore();
         removeMenu();
 
         gameOver = false;
@@ -704,9 +707,76 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 b.Couple.Couple = null;
                 b.Couple = null;
                 score += posXCount * posYCount * newCoupleScreenDivider / levelIntervalInSeconds / 100;
-                //[self drawScore];
+                drawScore();
             }
         }
+    }
+
+    private void drawScore() {
+        if (nextLevelScore < score)
+            levelUp();
+    }
+
+    private void levelUp() {
+        level++;
+        levelPow = 2;
+        nextLevelScore *= levelPow;
+
+        if ((float) levelIntervalInSeconds > 4.0 / (float) posYCount)
+            levelIntervalInSeconds -= 0.05;
+        else if (newCoupleScreenDivider < 2)
+            newCoupleScreenDivider *= 2;
+        else {
+            //Remove Objects
+            //destroyGridLines();
+            _gotoMenuButton = null;
+            _soundButton = null;
+            _playPauseButton = null;
+
+            //Resize Grid & Add Old Bricks
+            posXCount *= 1.125;
+            posYCount *= 1.125;
+            startGameWithBricks();
+
+            for (Brick b : bricks) {
+                int frameW = getWidth();
+                int frameH = getHeight();
+                int w = (frameW - xMargin * 2) / (posXCount + 1);
+                int h = (frameH - yMargin * 2) / (posYCount + 1);
+                b.setSize(w, h);
+                setBrickPosition(b);
+            }
+        }
+
+        int frameW = getWidth();
+        int frameH = getHeight();
+        Resources resources = getResources();
+
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inMutable = true;
+        Bitmap res = BitmapFactory.decodeResource(resources, R.drawable.levelup, opt);
+        levelUpSign = new SpriteNode(res, 100, 100);
+
+        /*
+        if (levelUpSign != nil)
+        {
+            [levelUpSign removeFromParent];
+            levelUpSign = nil;
+        }
+
+        float frameW = CGRectGetWidth(self.frame);
+        float frameH = CGRectGetHeight(self.frame);
+        levelUpSign = [SKSpriteNode spriteNodeWithImageNamed:@"LevelUp"];
+        [levelUpSign setPosition:CGPointMake(frameW/2,frameH/2)];
+        [levelUpSign setSize:CGSizeMake(7.5, 5.92)];
+        [self addChild:levelUpSign];
+
+        SKAction* e0 = [SKAction fadeInWithDuration:0.25];
+        SKAction* e1 = [SKAction scaleBy:50 duration:0.5];
+        SKAction* e2 = [SKAction fadeOutWithDuration:0.25];
+        SKAction* sequence = [SKAction sequence:@[e0,e1,e2]];
+        [levelUpSign runAction:sequence];
+        */
     }
 
     private void createBackground() {
@@ -823,6 +893,36 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 _gotoMenuButton.draw(canvas);
                 _playPauseButton.draw(canvas);
                 _soundButton.draw(canvas);
+
+                int frameW = getWidth();
+                int frameH = getHeight();
+                Resources resources = getResources();
+                //DrawScore
+                String scoreText = String.format("Score: %d", score);
+                int scoreX = frameW / 2;
+                int scoreY = yMargin;
+                Paint scorePaint = new Paint();
+                scorePaint.setColor(Color.WHITE);
+                scorePaint.setTextSize(frameH / 32);
+                scorePaint.setAntiAlias(true);
+                scorePaint.setTextAlign(Paint.Align.CENTER);
+                Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL);
+                canvas.drawText(scoreText, scoreX, scoreY, scorePaint);
+                //Draw LevelUp
+                if (levelUpSign != null)
+                    if (levelUpSign.Width < frameW / 2 && levelUpSign.Height < frameH / 2) {
+                        BitmapFactory.Options opt = new BitmapFactory.Options();
+                        opt.inMutable = true;
+                        Bitmap res = BitmapFactory.decodeResource(resources, R.drawable.levelup, opt);
+                        levelUpSign = new SpriteNode(res, levelUpSign.Width + 20, levelUpSign.Height + 20);
+
+                        Paint levelUpSignPaint = new Paint();
+                        levelUpSignPaint.setAlpha((int) (0.5 * 255));
+                        canvas.drawBitmap(levelUpSign.image,
+                                frameW / 2 - levelUpSign.Width / 2,
+                                frameH / 2 - levelUpSign.Height / 2,
+                                levelUpSignPaint);
+                    }
             }
             canvas.restoreToCount(savedState);
         }
