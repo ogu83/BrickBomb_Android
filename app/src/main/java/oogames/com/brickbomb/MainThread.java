@@ -71,7 +71,8 @@ public class MainThread extends Thread {
                 averageFPS = 1000 / ((totalTime / frameCount) / 1);
                 frameCount = 0;
                 totalTime = 0;
-                System.out.printf("AverageFPS : %s%n", averageFPS);
+                if (averageFPS != FPS)
+                    System.out.printf("AverageFPS : %s%n", averageFPS);
             }
         }
     }

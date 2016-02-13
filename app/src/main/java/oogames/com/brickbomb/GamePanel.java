@@ -15,14 +15,31 @@ import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.net.Uri;
+import android.provider.Settings.Secure;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import static java.util.Collections.synchronizedList;
+
 
 /**
  * Created by ADMIN on 11.02.2016.
@@ -50,6 +67,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private int level = 1;
     private int nextLevelScore = 100;
     private int levelPow = 10;
+
     private String UserName;
     private MainThread thread;
     private List<Brick> bricks;
@@ -69,6 +87,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private MenuButton btnHighScore;
     private MenuButton btnRate;
     private MenuButton btnExit;
+
+    private String android_id = Secure.getString(getContext().getContentResolver(),
+            Secure.ANDROID_ID);
 
     public GamePanel(Context context) {
         super(context);
@@ -241,6 +262,121 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         return by;
     }
 
+    private void gotoMenu() {
+        score = 0;
+        gridLinesOn = true;
+        createMenu(getWidth(), getHeight(), getResources());
+    }
+
+    private void SendHighScoreToServerAlert() {
+        System.out.printf("Sending High Score To Server Dialog, Score : %d%n", score);
+        final Activity mainActivity = (Activity) getContext();
+        mainActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                final EditText input = new EditText(mainActivity);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT);
+                input.setLayoutParams(lp);
+                new AlertDialog.Builder(getContext())
+                        .setView(input)
+                        .setTitle("Congratulations")
+                        .setMessage(String.format("Great Score: %d. Enter your name to the high score table", score))
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                UserName = input.getText().toString();
+                                System.out.printf("Username selected: %s%n", UserName);
+                                SendHighScoreToServer();
+                                gotoMenu();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                gotoMenu();
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+            }
+        });
+    }
+
+    private void SendHighScoreToServer() {
+        String deviceId = android_id;
+        UserName = deviceId;
+        String url = String.format(
+                "%s/HighScore?appId=%s&deviceId=%s&name=%s&score=%d",
+                Constants.ApiAddress, Constants.AppId, deviceId, UserName, score);
+
+        System.out.println(String.format("Send High Score To Server Score :%d Device Id: %s Username: %s%n", score, deviceId, UserName));
+
+        performPostCall(url, new HashMap<String, String>());
+    }
+
+    private String performPostCall(String requestURL, HashMap<String, String> postDataParams) {
+        URL url;
+        String response = "";
+
+        System.out.printf("Perform HttpPost: %s%n", requestURL);
+
+        try {
+            url = new URL(requestURL);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(15000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+
+            OutputStream os = conn.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(os, "UTF-8"));
+            writer.write(getPostDataString(postDataParams));
+
+            writer.flush();
+            writer.close();
+            os.close();
+            int responseCode = conn.getResponseCode();
+
+            if (responseCode == HttpsURLConnection.HTTP_OK) {
+                String line;
+                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                while ((line = br.readLine()) != null) {
+                    response += line;
+                }
+            } else {
+                response = "";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        System.out.printf("Http Post Response : %s%n", response);
+        return response;
+    }
+
+    private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
+        if (params == null)
+            return null;
+
+        StringBuilder result = new StringBuilder();
+        boolean first = true;
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            if (first)
+                first = false;
+            else
+                result.append("&");
+
+            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+            result.append("=");
+            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+        }
+
+        return result.toString();
+    }
+
     private void createMenu(int w, int h, Resources resources) {
         btnStart = MenuButton.StartButton(w, h, resources);
         btnHowToPlay = MenuButton.HowToPlay(w, h, resources);
@@ -362,13 +498,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void gameOver() {
+        System.out.printf("Game Over, Brick Count: %d, Level: %d, Score: %d%n", bricks.size(), level, score);
         gameOver = true;
         createBackgroundMusic2();
-        int w = this.getWidth();
-        int h = this.getHeight();
-        //System.out.printf("ScreenW: %d ScreenH: %d%n", w, h);
-        Resources resources = getResources();
-        createMenu(w, h, resources);
+        SendHighScoreToServerAlert();
     }
 
     private void createBrickCouple() {
@@ -722,8 +855,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         levelPow = 2;
         nextLevelScore *= levelPow;
 
-        if ((float) levelIntervalInSeconds > 4.0 / (float) posYCount)
+        System.out.println(String.format("Level up, level: %d Next Level at %d%n", level, nextLevelScore));
+
+        if ((float) levelIntervalInSeconds > 4.0 / (float) posYCount) {
             levelIntervalInSeconds -= 0.05;
+            System.out.printf("New Level Interval %s seconds%n", levelIntervalInSeconds);
+        }
         else if (newCoupleScreenDivider < 2)
             newCoupleScreenDivider *= 2;
         else {
@@ -732,10 +869,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             _gotoMenuButton = null;
             _soundButton = null;
             _playPauseButton = null;
-
             //Resize Grid & Add Old Bricks
             posXCount *= 1.125;
             posYCount *= 1.125;
+            System.out.printf("New Grid X: %dY: %d%n", posXCount, posYCount);
             startGameWithBricks();
 
             for (Brick b : bricks) {
@@ -748,35 +885,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             }
         }
 
-        int frameW = getWidth();
-        int frameH = getHeight();
         Resources resources = getResources();
 
         BitmapFactory.Options opt = new BitmapFactory.Options();
         opt.inMutable = true;
         Bitmap res = BitmapFactory.decodeResource(resources, R.drawable.levelup, opt);
-        levelUpSign = new SpriteNode(res, 100, 100);
-
-        /*
-        if (levelUpSign != nil)
-        {
-            [levelUpSign removeFromParent];
-            levelUpSign = nil;
-        }
-
-        float frameW = CGRectGetWidth(self.frame);
-        float frameH = CGRectGetHeight(self.frame);
-        levelUpSign = [SKSpriteNode spriteNodeWithImageNamed:@"LevelUp"];
-        [levelUpSign setPosition:CGPointMake(frameW/2,frameH/2)];
-        [levelUpSign setSize:CGSizeMake(7.5, 5.92)];
-        [self addChild:levelUpSign];
-
-        SKAction* e0 = [SKAction fadeInWithDuration:0.25];
-        SKAction* e1 = [SKAction scaleBy:50 duration:0.5];
-        SKAction* e2 = [SKAction fadeOutWithDuration:0.25];
-        SKAction* sequence = [SKAction sequence:@[e0,e1,e2]];
-        [levelUpSign runAction:sequence];
-        */
+        levelUpSign = new SpriteNode(res, 75, 59);
     }
 
     private void createBackground() {
@@ -835,7 +949,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 moveBricksDown();
                 //for (Brick b : bricks)
                 //    b.update();
-                //[self calculateScore];
                 updatedTime = currentTime;
             }
 

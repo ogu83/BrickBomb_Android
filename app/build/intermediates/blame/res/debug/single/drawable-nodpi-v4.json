@@ -1,27 +1,19 @@
 [
     {
-        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/rate.png",
-        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/rate.png"
-    },
-    {
-        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/tbrick.png",
-        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/tbrick.png"
-    },
-    {
         "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/start.png",
         "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/start.png"
     },
     {
-        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/levelup.png",
-        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/levelup.png"
+        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/launchimage.png",
+        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/launchimage.png"
+    },
+    {
+        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/icon2.png",
+        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/icon2.png"
     },
     {
         "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/gotomenu.png",
         "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/gotomenu.png"
-    },
-    {
-        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/redbrick.png",
-        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/redbrick.png"
     },
     {
         "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/orangebrick.png",
@@ -30,10 +22,6 @@
     {
         "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/pause.png",
         "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/pause.png"
-    },
-    {
-        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/howtoplay.png",
-        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/howtoplay.png"
     },
     {
         "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/purplebrick.png",
@@ -52,28 +40,56 @@
         "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/bluebrick.png"
     },
     {
-        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/soundon.png",
-        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/soundon.png"
-    },
-    {
         "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/howtoplayscreen.png",
         "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/howtoplayscreen.png"
-    },
-    {
-        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/exit.png",
-        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/exit.png"
     },
     {
         "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/fbrick.png",
         "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/fbrick.png"
     },
     {
-        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/soundoff.png",
-        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/soundoff.png"
-    },
-    {
         "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/play.png",
         "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/play.png"
+    },
+    {
+        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/rate.png",
+        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/rate.png"
+    },
+    {
+        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/tbrick.png",
+        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/tbrick.png"
+    },
+    {
+        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/levelup.png",
+        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/levelup.png"
+    },
+    {
+        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/redbrick.png",
+        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/redbrick.png"
+    },
+    {
+        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/icon3.png",
+        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/icon3.png"
+    },
+    {
+        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/howtoplay.png",
+        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/howtoplay.png"
+    },
+    {
+        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/icon1.png",
+        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/icon1.png"
+    },
+    {
+        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/soundon.png",
+        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/soundon.png"
+    },
+    {
+        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/exit.png",
+        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/exit.png"
+    },
+    {
+        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/soundoff.png",
+        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/soundoff.png"
     },
     {
         "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/yellowbrick.png",
