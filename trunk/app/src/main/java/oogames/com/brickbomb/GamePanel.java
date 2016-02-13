@@ -88,6 +88,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private MenuButton btnRate;
     private MenuButton btnExit;
 
+    private boolean onHowToPlay;
+    private SpriteNode howToPlayScreen;
+    private SpriteNode howToPlayCloseButton;
+
     private String android_id = Secure.getString(getContext().getContentResolver(),
             Secure.ANDROID_ID);
 
@@ -141,28 +145,31 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         thread.start();
     }
 
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         float locX = event.getX();
         float locY = event.getY();
-
-
         //System.out.println("Touch Action : " + event.getActionMasked());
-
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 if (onMenu) {
-                    if (btnStart.ContainsCGPosition(locX, locY)) {
+                    if (howToPlayCloseButton != null && onHowToPlay) {
+                        if (howToPlayCloseButton.ContainsCGPosition(locX, locY)) {
+                            System.out.println("btnHowToPlayClose Clicked");
+                            onHowToPlay = false;
+                        }
+                    } else if (btnStart.ContainsCGPosition(locX, locY)) {
                         System.out.println("btnStart Clicked");
                         startGame();
                     } else if (btnHowToPlay.ContainsCGPosition(locX, locY)) {
                         System.out.println("btnHowToPlay Clicked");
+                        showHowToPlay();
                     } else if (btnHighScore.ContainsCGPosition(locX, locY)) {
                         System.out.println("btnHighScore Clicked");
                         gotoHighScores();
                     } else if (btnRate.ContainsCGPosition(locX, locY)) {
                         System.out.println("btnRate Clicked");
+                        gotoRates();
                     } else if (btnExit.ContainsCGPosition(locX, locY)) {
                         System.out.println("btnExit Clicked");
                         doExit();
@@ -919,6 +926,40 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         getContext().startActivity(browserIntent);
     }
 
+    private void gotoRates() {
+        String link = Constants.GoogleAppLink;
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+        getContext().startActivity(browserIntent);
+    }
+
+    private void showHowToPlay() {
+        if (howToPlayScreen == null) {
+            int frameW = getWidth();
+            int frameH = getHeight();
+            Resources resources = getResources();
+
+            BitmapFactory.Options opt = new BitmapFactory.Options();
+            opt.inMutable = true;
+            Bitmap res = BitmapFactory.decodeResource(resources, R.drawable.howtoplayscreen, opt);
+            double ratio = 1199.0 / 1921.0;
+            int h = frameH - yMargin * 2;
+            int w = (int) (h * ratio);
+            howToPlayScreen = new SpriteNode(res, w, h);
+            howToPlayScreen.X = frameW / 2 - w / 2;
+            howToPlayScreen.Y = frameH / 2 - h / 2;
+
+            BitmapFactory.Options opt1 = new BitmapFactory.Options();
+            opt1.inMutable = true;
+            Bitmap res1 = BitmapFactory.decodeResource(resources, R.drawable.gotomenu, opt);
+            int h1 = frameH / 16;
+            int w1 = h1;
+            howToPlayCloseButton = new SpriteNode(res1, w1, h1);
+            howToPlayCloseButton.X = frameW / 2 + w / 2 - xMargin / 2 - w1 / 2;
+            howToPlayCloseButton.Y = frameH / 2 - h / 2 - yMargin / 2 + h1 / 2;
+        }
+        onHowToPlay = true;
+    }
+
     private void doExit() {
         new AlertDialog.Builder(getContext())
                 .setTitle("Leaving")
@@ -1002,6 +1043,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 btnHighScore.draw(canvas);
                 btnRate.draw(canvas);
                 btnExit.draw(canvas);
+                if (howToPlayScreen != null && howToPlayCloseButton != null && onHowToPlay) {
+                    howToPlayScreen.draw(canvas);
+                    howToPlayCloseButton.draw(canvas);
+                }
             } else {
                 _gotoMenuButton.draw(canvas);
                 _playPauseButton.draw(canvas);
@@ -1027,7 +1072,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                         BitmapFactory.Options opt = new BitmapFactory.Options();
                         opt.inMutable = true;
                         Bitmap res = BitmapFactory.decodeResource(resources, R.drawable.levelup, opt);
-                        levelUpSign = new SpriteNode(res, levelUpSign.Width + 20, levelUpSign.Height + 20);
+                        levelUpSign = new SpriteNode(res, (int) (levelUpSign.Width * 1.125), (int) (levelUpSign.Height * 1.125));
 
                         Paint levelUpSignPaint = new Paint();
                         levelUpSignPaint.setAlpha((int) (0.5 * 255));
