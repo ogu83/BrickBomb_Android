@@ -6,24 +6,30 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.net.Uri;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+
+import static java.util.Collections.synchronizedList;
 
 /**
  * Created by ADMIN on 11.02.2016.
  */
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
+    public volatile boolean isUpdating;
+    public volatile boolean isDrawing;
     long updatedTime;
     private int posXCount = 9;
     private int posYCount = 16;
@@ -35,26 +41,25 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private boolean gameOver;
     private boolean onMenu;
     private boolean onMoveBricksDown;
-
     private MediaPlayer player;
+    private MediaPlayer bum4Player;
+    private SoundPool soundPool;
     private boolean isSoundOn;
-
+    private int score = 0;
     private int level = 1;
     private int nextLevelScore = 100;
     private int levelPow = 10;
     private String UserName;
-
     private MainThread thread;
-
     private List<Brick> bricks;
-
     private boolean gridLinesOn = true;
     private BrickCouple brickCouple;
     private Brick selectedBrick;
     private int firstTouchX;
     private boolean brickMoved;
-
-    private int score;
+    private SpriteNode _soundButton;
+    private SpriteNode _playPauseButton;
+    private SpriteNode _gotoMenuButton;
 
     private MenuButton btnStart;
     private MenuButton btnHowToPlay;
@@ -101,7 +106,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         Resources resources = getResources();
 
 
-        bricks = Collections.synchronizedList(new ArrayList<Brick>());
+        bricks = synchronizedList(new ArrayList<Brick>());
         gridLinesOn = true;
         createMenu(w, h, resources);
         createBackground();
@@ -139,18 +144,61 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                         doExit();
                     }
                 } else {
-                    for (Brick b : bricks) {
-                        int left = CGPosXFromPosX(b.Pos().Left().X);
-                        int right = CGPosXFromPosX(b.Pos().Right().X);
-                        int top = CGPosYFromPosY(b.Pos().Top().Y);
-                        int bottom = CGPosYFromPosY(b.Pos().Bottom().Y);
+                    if (_gotoMenuButton.ContainsCGPosition(locX, locY)) {
+                        System.out.println("gotoMenuButton Clicked");
+                        gamePaused = true;
+                        player.stop();
 
-                        if (locX > left && locX < right &&
-                                locY < bottom && locY > top) {
-                            selectedBrick = b;
-                            firstTouchX = (int) locX;
-                            System.out.println("Selected Brick:" + b.BType.toString());
-                            break;
+                        //show confirmation message to user
+                        new AlertDialog.Builder(getContext())
+                                .setTitle("End Game")
+                                .setMessage("Are you leaving?")
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        gameOver();
+                                    }
+                                })
+                                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        gamePaused = false;
+                                        if (isSoundOn)
+                                            player.start();
+                                    }
+                                })
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .show();
+                    } else if (_soundButton.ContainsCGPosition(locX, locY)) {
+                        isSoundOn = !isSoundOn;
+                        if (!isSoundOn)
+                            player.stop();
+                        else
+                            createBackgroundMusic1();
+
+                        _soundButton = null;
+                        createSoundButton(isSoundOn);
+                    } else if (_playPauseButton.ContainsCGPosition(locX, locY)) {
+                        gamePaused = !gamePaused;
+                        if (gamePaused)
+                            player.stop();
+                        else if (isSoundOn)
+                            player.start();
+
+                        _playPauseButton = null;
+                        createPlayPauseButton(gamePaused);
+                    } else {
+                        for (Brick b : bricks) {
+                            int left = CGPosXFromPosX(b.Pos().Left().X);
+                            int right = CGPosXFromPosX(b.Pos().Right().X);
+                            int top = CGPosYFromPosY(b.Pos().Top().Y);
+                            int bottom = CGPosYFromPosY(b.Pos().Bottom().Y);
+
+                            if (locX > left && locX < right &&
+                                    locY < bottom && locY > top) {
+                                selectedBrick = b;
+                                firstTouchX = (int) locX;
+                                System.out.println("Selected Brick:" + b.BType.toString());
+                                break;
+                            }
                         }
                     }
                 }
@@ -208,13 +256,69 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         onMenu = false;
     }
 
+    private void createSoundButton(boolean isOn) {
+        Resources resources = getResources();
+        int frameH = getHeight();
+        double ratio = 403 / 300;
+        int h = frameH / 16;
+        int w = (int) (h * ratio);
+
+        //String imageName = isOn ? "SoundOn" : "SoundOff";
+
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inMutable = true;
+        Bitmap res = BitmapFactory.decodeResource(resources, isOn ? R.drawable.soundon : R.drawable.soundoff, opt);
+
+        _soundButton = new SpriteNode(res, w, h);
+        _soundButton.X = xMargin + w / 2;
+        _soundButton.Y = frameH - yMargin - h / 2;
+    }
+
+    private void createPlayPauseButton(boolean isPaused) {
+        Resources resources = getResources();
+        int frameH = getHeight();
+        double ratio = 1;
+        int h = frameH / 16;
+        int w = (int) (h * ratio);
+
+        //String imageName = isPaused ? @"Play" : @"Pause";
+
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inMutable = true;
+        Bitmap res = BitmapFactory.decodeResource(resources, isPaused ? R.drawable.play : R.drawable.pause, opt);
+
+        _playPauseButton = new SpriteNode(res, w, h);
+        _playPauseButton.X = _soundButton.Width + 2 * xMargin + w;
+        _playPauseButton.Y = frameH - yMargin - h / 2;
+    }
+
+    private void createGotoMenuButton() {
+        Resources resources = getResources();
+        int frameH = getHeight();
+        int frameW = getWidth();
+        double ratio = 1;
+        int h = frameH / 16;
+        int w = (int) (h * ratio);
+
+        //String imageName = @"GotoMenu";
+
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inMutable = true;
+        Bitmap res = BitmapFactory.decodeResource(resources, R.drawable.gotomenu, opt);
+
+        _gotoMenuButton = new SpriteNode(res, w, h);
+        _gotoMenuButton.X = frameW - xMargin - w - w / 2;
+        _gotoMenuButton.Y = frameH - yMargin - h / 2;
+    }
+
     private void startGameWithBricks() {
         //[music2 removeFromParent];
         isSoundOn = true;
         gamePaused = false;
-        //[self createSoundButton:isSoundOn];
-        //[self createPlayPauseButton:gamePaused];
-        //[self createGotoMenuButton];
+
+        createSoundButton(isSoundOn);
+        createPlayPauseButton(gamePaused);
+        createGotoMenuButton();
 
         createBackgroundMusic1();
         gridLinesOn = true;
@@ -225,9 +329,43 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void startGame() {
-        bricks = Collections.synchronizedList(new ArrayList<Brick>());
+        bricks = synchronizedList(new ArrayList<Brick>());
         //[self createBrickCouple];
         startGameWithBricks();
+    }
+
+    private void checkGameOver() {
+        if (gameOver)
+            return;
+
+        for (Brick b : bricks) {
+            if (b.PositionY == 0) {
+                if (b.Couple == null) {
+                    if (!canMoveDown(b)) {
+                        gameOver();
+                        return;
+                    }
+                } else {
+
+                    if ((b.Couple.PositionX == b.PositionX && !canMoveDown(b) && !canMoveDown(b.Couple))
+                            ||
+                            (b.Couple.PositionY == b.PositionY && (!canMoveDown(b) || !canMoveDown(b.Couple)))) {
+                        gameOver();
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    private void gameOver() {
+        gameOver = true;
+        createBackgroundMusic2();
+        int w = this.getWidth();
+        int h = this.getHeight();
+        //System.out.printf("ScreenW: %d ScreenH: %d%n", w, h);
+        Resources resources = getResources();
+        createMenu(w, h, resources);
     }
 
     private void createBrickCouple() {
@@ -248,8 +386,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
         brickCouple.rotationPos = brickCouple.Brick2.PositionY == 0 ? 1 : 0;
 
-        bricks.add(brickCouple.Brick2);
-        bricks.add(brickCouple.Brick1);
+        try {
+            bricks.add(brickCouple.Brick2);
+            bricks.add(brickCouple.Brick1);
+        } catch (Exception ex) {
+            System.out.printf("Error when adding Brick Couple, Bricks Count:%d%n", bricks.size());
+            ex.printStackTrace();
+        }
 
         setBrickPosition(brickCouple.Brick1);
         setBrickPosition(brickCouple.Brick2);
@@ -506,12 +649,18 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void explodeBricks() {
-        List<Brick> discardedItems = Collections.synchronizedList(new ArrayList<Brick>());
+        List<Brick> discardedItems = synchronizedList(new ArrayList<Brick>());
 
         for (int b0 = 0; b0 < bricks.size(); b0++) {
             for (int b1 = b0 + 1; b1 < bricks.size(); b1++) {
                 Brick bb0 = bricks.get(b0);
                 Brick bb1 = bricks.get(b1);
+
+                if (bb0.IsReadyToExplode)
+                    discardedItems.add(bb0);
+                if (bb1.IsReadyToExplode)
+                    discardedItems.add(bb1);
+
                 if (bb0.Couple != bb1 && bb1.Couple != bb0 && bb0 != bb1
                         && !bb0.IsReadyToExplode && !bb1.IsReadyToExplode
                         && bb1.BType == bb0.BType) {
@@ -520,10 +669,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
                     if (isbb0Stuck && isbb1Stuck) {
                         bb0.IsReadyToExplode = bb1.IsReadyToExplode =
-                                bb0.Pos().Right().isEqualPos(bb1.Pos()) ||
+                                (bb0.Pos().Right().isEqualPos(bb1.Pos()) ||
                                         bb0.Pos().Left().isEqualPos(bb1.Pos()) ||
                                         bb0.Pos().Top().isEqualPos(bb1.Pos()) ||
-                                        bb0.Pos().Bottom().isEqualPos(bb1.Pos());
+                                        bb0.Pos().Bottom().isEqualPos(bb1.Pos()));
 
                         if (bb0.IsReadyToExplode) {
                             discardedItems.add(bb0);
@@ -535,16 +684,27 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         if (discardedItems.size() > 0) {
+            /*
+            soundPool = new SoundPool(2,AudioManager.STREAM_MUSIC,0);
+            int id = soundPool.load(getContext(),R.raw.bum4,1);
+            soundPool.play(id, 1.0f, 1.0f, 0, 0, 1.5f);
+            */
+            bum4Player = null;
+            if (bum4Player == null) {
+                bum4Player = MediaPlayer.create(getContext(), R.raw.bum4);
+                bum4Player.setLooping(false);
+                bum4Player.setVolume(100, 100);
+            } else
+                bum4Player.stop();
+
+            bum4Player.start();
+
             bricks.removeAll(discardedItems);
             for (Brick b : discardedItems) {
                 b.Couple.Couple = null;
                 b.Couple = null;
-
                 score += posXCount * posYCount * newCoupleScreenDivider / levelIntervalInSeconds / 100;
                 //[self drawScore];
-
-                //SKAction* bum = [SKAction playSoundFileNamed:@"Bum4.wav" waitForCompletion:NO];
-                //[self runAction:bum];
             }
         }
     }
@@ -595,25 +755,30 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void update() {
+        isUpdating = true;
+
         long currentTime = System.currentTimeMillis();
         if (!onMenu && !gameOver && !gamePaused) {
             if (updatedTime == 0 || (currentTime - updatedTime) > 1000 * levelIntervalInSeconds) {
-                //[self checkGameOver];
-                //[self explodeBircks];
+                checkGameOver();
                 explodeBricks();
                 moveBricksDown();
-                for (Brick b : bricks)
-                    b.update();
+                //for (Brick b : bricks)
+                //    b.update();
                 //[self calculateScore];
                 updatedTime = currentTime;
             }
+
+            //_soundButton.update();
+            //_playPauseButton.update();
+            //_gotoMenuButton.update();
         } else if (onMenu) {
-            btnStart.update();
-            btnStart.update();
-            btnHowToPlay.update();
-            btnHighScore.update();
-            btnRate.update();
-            btnExit.update();
+            //btnStart.update();
+            //btnStart.update();
+            //btnHowToPlay.update();
+            //btnHighScore.update();
+            //btnRate.update();
+            //btnExit.update();
 
             if (updatedTime == 0 || currentTime - updatedTime > 1000 * 0.25) {
                 moveBricksDown();
@@ -622,10 +787,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 updatedTime = currentTime;
             }
         }
+
+        isUpdating = false;
     }
 
     @Override
     public void draw(Canvas canvas) {
+        if (isUpdating)
+            return;
+        isDrawing = true;
+
         if (canvas != null) {
             final int savedState = canvas.save();
             super.draw(canvas);
@@ -649,10 +820,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 btnRate.draw(canvas);
                 btnExit.draw(canvas);
             } else {
-
+                _gotoMenuButton.draw(canvas);
+                _playPauseButton.draw(canvas);
+                _soundButton.draw(canvas);
             }
-
             canvas.restoreToCount(savedState);
         }
+
+        isDrawing = false;
     }
 }
