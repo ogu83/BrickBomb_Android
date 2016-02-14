@@ -57,7 +57,7 @@ ADDED from /Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/m
 	android:name
 		ADDED from /Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/AndroidManifest.xml:22:22-64
 uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
-ADDED from /Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/AndroidManifest.xml:23:5-80
+ADDED from /Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/AndroidManifest.xml:23:5-81
 	android:name
 		ADDED from /Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/AndroidManifest.xml:23:22-78
 uses-sdk
