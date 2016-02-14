@@ -15,6 +15,7 @@ import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.Settings.Secure;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -24,6 +25,10 @@ import android.widget.LinearLayout;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -48,6 +53,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     public volatile boolean isUpdating;
     public volatile boolean isDrawing;
+    public MainThread thread;
     long updatedTime;
     private int posXCount = 9;
     private int posYCount = 16;
@@ -67,31 +73,25 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private int level = 1;
     private int nextLevelScore = 100;
     private int levelPow = 10;
-
     private String UserName;
-    private MainThread thread;
     private List<Brick> bricks;
     private boolean gridLinesOn = true;
     private BrickCouple brickCouple;
     private Brick selectedBrick;
     private int firstTouchX;
     private boolean brickMoved;
-
     private SpriteNode _soundButton;
     private SpriteNode _playPauseButton;
     private SpriteNode _gotoMenuButton;
     private SpriteNode levelUpSign;
-
     private MenuButton btnStart;
     private MenuButton btnHowToPlay;
     private MenuButton btnHighScore;
     private MenuButton btnRate;
     private MenuButton btnExit;
-
     private boolean onHowToPlay;
     private SpriteNode howToPlayScreen;
     private SpriteNode howToPlayCloseButton;
-
     private String android_id = Secure.getString(getContext().getContentResolver(),
             Secure.ANDROID_ID);
 
@@ -114,11 +114,18 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
+        System.out.println("Surface Destroyed");
         boolean retry = true;
         while (retry) {
             try {
-                thread.setRunning(false);
-                thread.join();
+                if (thread != null) {
+                    thread.setRunning(false);
+                    thread.join();
+                    thread = null;
+                } else {
+                    retry = false;
+                    break;
+                }
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
                 retry = false;
@@ -128,11 +135,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        System.out.println("Surface Created");
         int w = this.getWidth();
         int h = this.getHeight();
         System.out.printf("ScreenW: %d ScreenH: %d%n", w, h);
         Resources resources = getResources();
-
 
         bricks = synchronizedList(new ArrayList<Brick>());
         gridLinesOn = true;
@@ -141,6 +148,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         createBackgroundMusic2();
 
         //start the game loop
+        if (thread == null)
+            thread = new MainThread(getHolder(), this);
         thread.setRunning(true);
         thread.start();
     }
@@ -255,6 +264,25 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         return true;
     }
 
+    public void Pause() {
+        if (player != null)
+            player.pause();
+        gamePaused = true;
+    }
+
+    public void Resume() {
+        if (player != null && (onMenu || isSoundOn))
+            player.start();
+        gamePaused = false;
+    }
+
+    private Bitmap screenShot() {
+        Bitmap b = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.RGB_565);
+        Canvas c = new Canvas(b);
+        this.draw(c);
+        return b;
+    }
+
     private int CGPosXFromPosX(int x) {
         int frameW = this.getWidth();
         int w = (frameW - xMargin * 2) / (posXCount + 1);
@@ -273,6 +301,29 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         score = 0;
         gridLinesOn = true;
         createMenu(getWidth(), getHeight(), getResources());
+    }
+
+    private void postToSocial() {
+        Bitmap bmp = screenShot();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+        byte[] bmpByteArray = stream.toByteArray();
+
+        File f = new File(Environment.getExternalStorageDirectory() + File.separator + "temporary_file.jpg");
+        try {
+            f.createNewFile();
+            FileOutputStream fo = new FileOutputStream(f);
+            fo.write(bmpByteArray);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("image/jpeg"); // might be text, sound, whatever
+        share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file:///sdcard/temporary_file.jpg"));
+        share.putExtra(Intent.EXTRA_TEXT, String.format("Hey, I completed #%s with score %d", Constants.GameName, score));
+        share.putExtra(Intent.EXTRA_HTML_TEXT, String.format("<a href='%s'>%s</a>", Constants.WebSite, Constants.WebSite));
+        getContext().startActivity(Intent.createChooser(share, "Share Your Score"));
     }
 
     private void SendHighScoreToServerAlert() {
@@ -310,15 +361,21 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void SendHighScoreToServer() {
-        String deviceId = android_id;
-        UserName = deviceId;
-        String url = String.format(
-                "%s/HighScore?appId=%s&deviceId=%s&name=%s&score=%d",
-                Constants.ApiAddress, Constants.AppId, deviceId, UserName, score);
+        Runnable task = new Runnable() {
+            @Override
+            public void run() {
+                String deviceId = android_id;
+                UserName = deviceId;
+                String url = String.format(
+                        "%s/HighScore?appId=%s&deviceId=%s&name=%s&score=%d",
+                        Constants.ApiAddress, Constants.AppId, deviceId, UserName, score);
 
-        System.out.println(String.format("Send High Score To Server Score :%d Device Id: %s Username: %s%n", score, deviceId, UserName));
-
-        performPostCall(url, new HashMap<String, String>());
+                System.out.println(String.format("Send High Score To Server Score :%d Device Id: %s Username: %s%n", score, deviceId, UserName));
+                performPostCall(url, new HashMap<String, String>());
+            }
+        };
+        task.run();
+        postToSocial();
     }
 
     private String performPostCall(String requestURL, HashMap<String, String> postDataParams) {

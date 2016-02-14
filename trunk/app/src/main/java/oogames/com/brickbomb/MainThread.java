@@ -15,7 +15,7 @@ public class MainThread extends Thread {
     private double averageFPS;
     private SurfaceHolder surfaceHolder;
     private GamePanel gamePanel;
-    private boolean running;
+    private volatile boolean running;
 
     public MainThread(SurfaceHolder surfaceHolder, GamePanel gamePanel) {
         super();
@@ -31,6 +31,8 @@ public class MainThread extends Thread {
         long totalTime = 0;
         int frameCount = 0;
         long targetTime = 1000 / FPS;
+
+        //android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_DISPLAY);
 
         while (running) {
             startTime = System.currentTimeMillis();
