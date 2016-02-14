@@ -52,12 +52,12 @@
         "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/play.png"
     },
     {
-        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/rate.png",
-        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/rate.png"
-    },
-    {
         "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/tbrick.png",
         "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/tbrick.png"
+    },
+    {
+        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/rate.png",
+        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/rate.png"
     },
     {
         "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/levelup.png",

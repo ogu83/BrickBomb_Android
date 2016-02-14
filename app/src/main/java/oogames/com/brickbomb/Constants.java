@@ -10,5 +10,5 @@ public final class Constants {
     public static final String AppId = "1082150144";
     public static final String ApiAddress = "http://brickbomb.ozoggames.com/api";
 
-    public static final String GoogleAppLink = "https://play.google.com/store/apps/details?id=com.whatsapp";
+    public static final String GoogleAppLink = "https://play.google.com/store/apps/details?id=oogames.com.brickbomb";
 }

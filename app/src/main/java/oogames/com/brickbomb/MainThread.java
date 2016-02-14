@@ -32,7 +32,7 @@ public class MainThread extends Thread {
         int frameCount = 0;
         long targetTime = 1000 / FPS;
 
-        //android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_DISPLAY);
+        android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_DISPLAY);
 
         while (running) {
             startTime = System.currentTimeMillis();
@@ -59,18 +59,18 @@ public class MainThread extends Thread {
                 }
             }
 
-            timeMillis = (System.currentTimeMillis() - startTime) / 1;
+            timeMillis = (System.currentTimeMillis() - startTime);
             waitTime = targetTime - timeMillis;
 
             try {
-                this.sleep(waitTime);
+                sleep(waitTime);
             } catch (Exception ex) {
             }
 
             totalTime += System.currentTimeMillis() - startTime;
             frameCount++;
             if (frameCount == FPS) {
-                averageFPS = 1000 / ((totalTime / frameCount) / 1);
+                averageFPS = 1000 / ((totalTime / frameCount));
                 frameCount = 0;
                 totalTime = 0;
                 if (averageFPS != FPS)

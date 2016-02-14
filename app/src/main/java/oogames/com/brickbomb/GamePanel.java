@@ -286,15 +286,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private int CGPosXFromPosX(int x) {
         int frameW = this.getWidth();
         int w = (frameW - xMargin * 2) / (posXCount + 1);
-        int bx = w * (x + 1) + xMargin - w / 2;
-        return bx;
+        return w * (x + 1) + xMargin - w / 2;
     }
 
     private int CGPosYFromPosY(int y) {
         int frameH = this.getHeight();
         int h = (frameH - yMargin * 2) / (posYCount + 1);
-        int by = h * (y + 1) + yMargin - h / 2;
-        return by;
+        return h * (y + 1) + yMargin - h / 2;
     }
 
     private void gotoMenu() {
@@ -321,8 +319,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("image/jpeg"); // might be text, sound, whatever
         share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file:///sdcard/temporary_file.jpg"));
-        share.putExtra(Intent.EXTRA_TEXT, String.format("Hey, I completed #%s with score %d", Constants.GameName, score));
-        share.putExtra(Intent.EXTRA_HTML_TEXT, String.format("<a href='%s'>%s</a>", Constants.WebSite, Constants.WebSite));
+        share.putExtra(Intent.EXTRA_TEXT, String.format("Hey, I completed #%s with score %d %s", Constants.GameName, score, Constants.WebSite));
+        //share.putExtra(Intent.EXTRA_TEXT, Constants.WebSite);
+        //share.putExtra(Intent.EXTRA_HTML_TEXT, String.format("<a href='%s'>%s</a>", Constants.WebSite, Constants.WebSite));
         getContext().startActivity(Intent.createChooser(share, "Share Your Score"));
     }
 
@@ -365,7 +364,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             @Override
             public void run() {
                 String deviceId = android_id;
-                UserName = deviceId;
                 String url = String.format(
                         "%s/HighScore?appId=%s&deviceId=%s&name=%s&score=%d",
                         Constants.ApiAddress, Constants.AppId, deviceId, UserName, score);
@@ -890,12 +888,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             soundPool.play(id, 1.0f, 1.0f, 0, 0, 1.5f);
             */
             bum4Player = null;
-            if (bum4Player == null) {
-                bum4Player = MediaPlayer.create(getContext(), R.raw.bum4);
-                bum4Player.setLooping(false);
-                bum4Player.setVolume(100, 100);
-            } else
-                bum4Player.stop();
+            bum4Player = MediaPlayer.create(getContext(), R.raw.bum4);
+            bum4Player.setLooping(false);
+            bum4Player.setVolume(100, 100);
 
             bum4Player.start();
 
