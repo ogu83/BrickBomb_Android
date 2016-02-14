@@ -10,20 +10,23 @@ import android.view.WindowManager;
 
 public class MainActivity extends Activity {
 
+    GamePanel gamePanel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        
+
         //Turn Title Off
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         //set To Full Screen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        setContentView(new GamePanel(this));
+        gamePanel = new GamePanel(this);
+        setContentView(gamePanel);
         /*
 
         setContentView(R.layout.activity_main);
@@ -51,7 +54,18 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onResume() {
+        System.out.println("Resumed");
+        if (gamePanel != null)
+            gamePanel.Resume();
         super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        System.out.println("Paused");
+        if (gamePanel != null)
+            gamePanel.Pause();
+        super.onPause();
     }
 
     @Override
