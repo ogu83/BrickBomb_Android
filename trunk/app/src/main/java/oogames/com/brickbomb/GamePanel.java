@@ -36,6 +36,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -193,6 +194,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                         new AlertDialog.Builder(getContext())
                                 .setTitle("End Game")
                                 .setMessage("Are you leaving?")
+                                .setCancelable(false)
                                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         gameOver();
@@ -227,10 +229,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                         createPlayPauseButton(gamePaused);
                     } else {
                         for (Brick b : bricks) {
-                            int left = CGPosXFromPosX(b.Pos().Left().X);
-                            int right = CGPosXFromPosX(b.Pos().Right().X);
-                            int top = CGPosYFromPosY(b.Pos().Top().Y);
-                            int bottom = CGPosYFromPosY(b.Pos().Bottom().Y);
+                            int left = CGPosXFromPosX(b.Pos().Left().Left().X);
+                            int right = CGPosXFromPosX(b.Pos().Right().Right().X);
+                            int top = CGPosYFromPosY(b.Pos().Top().Top().Y);
+                            int bottom = CGPosYFromPosY(b.Pos().Bottom().Bottom().Y);
 
                             if (locX > left && locX < right &&
                                     locY < bottom && locY > top) {
@@ -339,6 +341,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 new AlertDialog.Builder(getContext())
                         .setView(input)
                         .setTitle("Congratulations")
+                        .setCancelable(false)
                         .setMessage(String.format("Great Score: %d. Enter your name to the high score table", score))
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
@@ -364,6 +367,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             @Override
             public void run() {
                 String deviceId = android_id;
+                UserName = new String(UserName.getBytes(Charset.forName("UTF-8")));
                 String url = String.format(
                         "%s/HighScore?appId=%s&deviceId=%s&name=%s&score=%d",
                         Constants.ApiAddress, Constants.AppId, deviceId, UserName, score);
@@ -1016,6 +1020,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         new AlertDialog.Builder(getContext())
                 .setTitle("Leaving")
                 .setMessage("Do you want to leave?")
+                .setCancelable(false)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         ((Activity) getContext()).finish();

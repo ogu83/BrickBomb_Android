@@ -44,6 +44,23 @@
     <option name="id" value="Android" />
   </component>
   <component name="SvnBranchConfigurationManager">
+    <option name="myConfigurationMap">
+      <map>
+        <entry key="$PROJECT_DIR$">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="branchUrls">
+                <list>
+                  <option value="https://titan830.startdedicated.com/svn/BrickBomb_android/branches" />
+                  <option value="https://titan830.startdedicated.com/svn/BrickBomb_android/tags" />
+                </list>
+              </option>
+              <option name="trunkUrl" value="https://titan830.startdedicated.com/svn/BrickBomb_android/trunk" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="mySupportsUserInfoFilter" value="true" />
   </component>
   <component name="masterDetails">
