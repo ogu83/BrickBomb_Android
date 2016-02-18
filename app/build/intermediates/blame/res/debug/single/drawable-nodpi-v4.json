@@ -80,6 +80,10 @@
         "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/icon1.png"
     },
     {
+        "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/invertedlightclouds.png",
+        "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/invertedlightclouds.png"
+    },
+    {
         "merged": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/build/intermediates/res/merged/debug/drawable-nodpi-v4/soundon.png",
         "source": "/Users/oguzkoroglu/Projects/BrickBum/BrickBombAndroid/trunk/app/src/main/res/drawable-nodpi/soundon.png"
     },

@@ -958,6 +958,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     private void createBackground() {
         setBackgroundColor(Color.rgb(25, 25, 25));
+        /*
+        Resources resources = getResources();
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inMutable = true;
+        Bitmap res = BitmapFactory.decodeResource(resources, R.drawable.invertedlightclouds, opt);
+        */
+        if (android.os.Build.VERSION.SDK_INT >= 21)
+            setBackground(getResources().getDrawable(R.drawable.invertedlightclouds, getContext().getTheme()));
+        else
+            setBackground(getResources().getDrawable(R.drawable.invertedlightclouds));
     }
 
     private void createBackgroundMusic1() {
