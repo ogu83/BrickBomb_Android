@@ -806,6 +806,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                     //NSLog(@"Left Move");
                 }
                 brickMoved = true;
+                firstTouchX = positionInSceneX;
             }
         }
     }
